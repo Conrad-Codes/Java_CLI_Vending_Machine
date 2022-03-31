@@ -17,6 +17,7 @@ public class CaTEringCapstoneCLI {
 	private Menu menu;
 	private Scanner inputScanner;
 	private String displayOfferings = "";
+	private List<Product> offerings = new ArrayList<>();
 
 
 
@@ -37,7 +38,7 @@ public class CaTEringCapstoneCLI {
 	public void run() {
 
 		File inputFile = new File("catering.csv");
-		List<Product> offerings = new ArrayList<>();
+
 
 
 		try {
@@ -58,9 +59,6 @@ public class CaTEringCapstoneCLI {
 					offerings.add(new Drinks(lineArr[1],new BigDecimal(lineArr[3]), lineArr[0]));
 				}
 			}
-			for (Product offering : offerings){
-				displayOfferings += offering.getLocation() + " " + offering.getName() + " " + offering.getPrice()+"\n";
-			}
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found");
 		}
@@ -73,7 +71,7 @@ public class CaTEringCapstoneCLI {
 			menuChoice = menuChoice.toUpperCase();
 
 			if (menuChoice.equals("D")) {
-				System.out.println(displayOfferings);
+				System.out.println(offeringsDisplay());
 			} else if (menuChoice.equals("P")) {
 				runPurchase();
 			} else if (menuChoice.equals("E")) {
@@ -94,9 +92,22 @@ public class CaTEringCapstoneCLI {
 			if (menuChoice.equals("M")) {
 				// money!
 			} else if (menuChoice.equals("S")) {
-				System.out.println(displayOfferings);
+				//display offerings
+				System.out.println(offeringsDisplay());
 				//Ask for and take in location of offerings
-				//check if actual location
+				System.out.println("Please enter location of desired item");
+				String itemLocation = inputScanner.nextLine().toUpperCase();
+				//check if actual location exists
+				boolean locationFound = false;
+				for (Product offering : offerings){
+					if (offering.getLocation().equals(itemLocation)){
+						locationFound = true;
+						break;
+					}
+				}
+				if (!locationFound) {
+					System.out.println("Location not found");
+				}
 				// check if offering available
 				//yes - dispense
 				//no - NLA message
@@ -106,5 +117,18 @@ public class CaTEringCapstoneCLI {
 				keepRunning = false;
 			}
 		} while (keepRunning);
+	}
+
+	public String offeringsDisplay(){
+		String str = "";
+		for (Product offering : offerings){
+			str += offering.getLocation() + " " + offering.getName() + " " + offering.getPrice();
+			if (!offering.isAvailable()){
+				str+= " NO LONGER AVAILABLE\n";
+			}else {
+				str += "\n";
+			}
+		}
+		return str;
 	}
 }

@@ -34,6 +34,14 @@ public abstract class Product {
         return inventoryCount;
     }
 
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+
     public void setInventoryCount(int inventoryCount) {
         this.inventoryCount = inventoryCount;
     }
