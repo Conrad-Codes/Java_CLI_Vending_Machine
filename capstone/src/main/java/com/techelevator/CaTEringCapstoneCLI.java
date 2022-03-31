@@ -18,6 +18,7 @@ public class CaTEringCapstoneCLI {
 	private Scanner inputScanner;
 	private String displayOfferings = "";
 	private List<Product> offerings = new ArrayList<>();
+	private BigDecimal moneyProvided = new BigDecimal("0.00");
 
 
 
@@ -67,8 +68,7 @@ public class CaTEringCapstoneCLI {
 
 		do {
 			menu.mainMenu();
-			String menuChoice = inputScanner.nextLine();
-			menuChoice = menuChoice.toUpperCase();
+			String menuChoice = inputScanner.nextLine().toUpperCase();
 
 			if (menuChoice.equals("D")) {
 				System.out.println(offeringsDisplay());
@@ -87,10 +87,25 @@ public class CaTEringCapstoneCLI {
 
 		do {
 			menu.purchaseMenu();
+			System.out.println("\n Current Money Provided: $" + moneyProvided);
+
 			String menuChoice = inputScanner.nextLine();
 			menuChoice = menuChoice.toUpperCase();
+
 			if (menuChoice.equals("M")) {
 				// money!
+				boolean moneyDone = false;
+				do {
+					System.out.println("Please Feed Money or press S when done");
+					System.out.println("Current Money Provided: $" + moneyProvided);
+					String inputMoney = inputScanner.nextLine().toUpperCase();
+					if (inputMoney.equals("S")) {
+						moneyDone= true;
+					}else {
+						moneyProvided = moneyProvided.add(new BigDecimal(inputMoney));
+					}
+				}while (!moneyDone);
+
 			} else if (menuChoice.equals("S")) {
 				//display offerings
 				System.out.println(offeringsDisplay());
@@ -103,19 +118,23 @@ public class CaTEringCapstoneCLI {
 					if (offering.getLocation().equals(itemLocation)){
 						locationFound = true;
 						if (offering.isAvailable()) {
-							System.out.println(offering.getMessage());
-							offering.setInventoryCount();
-							if (offering.getInventoryCount() < 1) {
-								offering.setAvailable(false);
-								break;
+							if (moneyProvided.compareTo(offering.getPrice()) != -1){
+								System.out.println(offering.getMessage());
+								offering.setInventoryCount();
+								moneyProvided = moneyProvided.subtract(offering.getPrice());
+
+								if (offering.getInventoryCount() < 1) {
+									offering.setAvailable(false);
+									break;
+								}
+							}else {
+								System.out.println("Not enough funds for this item \n");
 							}
 						} else {
 							System.out.println("Item not available");
 							break;
 						}
-
 					}
-
 				}
 				if (!locationFound) {
 					System.out.println("Location not found");
