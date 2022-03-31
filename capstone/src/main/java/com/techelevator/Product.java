@@ -8,12 +8,14 @@ public abstract class Product {
     private BigDecimal price;
     private String location;
     private int inventoryCount = 7;
+    private boolean isAvailable;
 
 
     public Product(String name, BigDecimal price, String location) {
         this.name = name;
         this.price = price;
         this.location = location;
+        this.isAvailable = true;
     }
 
     public String getName() {

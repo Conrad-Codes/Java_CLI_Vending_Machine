@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class CaTEringCapstoneCLI {
@@ -15,6 +16,10 @@ public class CaTEringCapstoneCLI {
 
 	private Menu menu;
 	private Scanner inputScanner;
+	private String displayOfferings = "";
+
+
+
 
 	public CaTEringCapstoneCLI(Menu menu) {
 		this.menu = menu;
@@ -24,11 +29,19 @@ public class CaTEringCapstoneCLI {
 	public static void main(String[] args) {
 		Menu menu = new Menu();
 		CaTEringCapstoneCLI cli = new CaTEringCapstoneCLI(menu);
+
+
+		cli.run();
+	}
+
+	public void run() {
+
 		File inputFile = new File("catering.csv");
+		List<Product> offerings = new ArrayList<>();
+
 
 		try {
 			Scanner fileScanner = new Scanner(inputFile);
-			List<Product> offerings = new ArrayList<>();
 
 
 			while (fileScanner.hasNextLine()){
@@ -45,29 +58,27 @@ public class CaTEringCapstoneCLI {
 					offerings.add(new Drinks(lineArr[1],new BigDecimal(lineArr[3]), lineArr[0]));
 				}
 			}
-
+			for (Product offering : offerings){
+				displayOfferings += offering.getLocation() + " " + offering.getName() + " " + offering.getPrice()+"\n";
+			}
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found");
 		}
-
-//		cli.run();
-	}
-
-	public void run() {
 
 		boolean keepRunning = true;
 
 		do {
 			menu.mainMenu();
 			String menuChoice = inputScanner.nextLine();
+			menuChoice = menuChoice.toUpperCase();
+
 			if (menuChoice.equals("D")) {
-				// call offerings
+				System.out.println(displayOfferings);
 			} else if (menuChoice.equals("P")) {
 				runPurchase();
 			} else if (menuChoice.equals("E")) {
 				keepRunning = false;
 			}
-
 		} while (keepRunning);
 
 	}
@@ -79,16 +90,21 @@ public class CaTEringCapstoneCLI {
 		do {
 			menu.purchaseMenu();
 			String menuChoice = inputScanner.nextLine();
+			menuChoice = menuChoice.toUpperCase();
 			if (menuChoice.equals("M")) {
 				// money!
 			} else if (menuChoice.equals("S")) {
-				// select offering
+				System.out.println(displayOfferings);
+				//Ask for and take in location of offerings
+				//check if actual location
+				// check if offering available
+				//yes - dispense
+				//no - NLA message
+				//print dispense message
+				//update inventory, return to purchase menu
 			} else if (menuChoice.equals("F")) {
 				keepRunning = false;
 			}
-
 		} while (keepRunning);
-
 	}
-
 }
