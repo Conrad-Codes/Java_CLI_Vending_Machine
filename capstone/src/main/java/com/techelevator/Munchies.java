@@ -8,6 +8,8 @@ public class Munchies extends Product {
         super(name, price, location);
     }
 
-
-
+    @Override
+    public String getMessage() {
+        return "Munchy, Munchy, so Good!";
+    }
 }

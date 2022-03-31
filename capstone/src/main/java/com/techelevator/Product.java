@@ -18,6 +18,8 @@ public abstract class Product {
         this.isAvailable = true;
     }
 
+    public abstract String getMessage();
+
     public String getName() {
         return name;
     }
@@ -42,7 +44,7 @@ public abstract class Product {
         isAvailable = available;
     }
 
-    public void setInventoryCount(int inventoryCount) {
-        this.inventoryCount = inventoryCount;
+    public void setInventoryCount() {
+        this.inventoryCount--;
     }
 }

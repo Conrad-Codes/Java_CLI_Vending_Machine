@@ -8,4 +8,8 @@ public class Desserts extends Product {
         super(name, price, location);
     }
 
+    @Override
+    public String getMessage() {
+        return "Sugar, Sugar, so Sweet!";
+    }
 }

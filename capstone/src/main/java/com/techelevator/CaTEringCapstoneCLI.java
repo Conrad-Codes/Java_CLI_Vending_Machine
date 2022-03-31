@@ -102,13 +102,24 @@ public class CaTEringCapstoneCLI {
 				for (Product offering : offerings){
 					if (offering.getLocation().equals(itemLocation)){
 						locationFound = true;
-						break;
+						if (offering.isAvailable()) {
+							System.out.println(offering.getMessage());
+							offering.setInventoryCount();
+							if (offering.getInventoryCount() < 1) {
+								offering.setAvailable(false);
+								break;
+							}
+						} else {
+							System.out.println("Item not available");
+							break;
+						}
+
 					}
+
 				}
 				if (!locationFound) {
 					System.out.println("Location not found");
 				}
-				// check if offering available
 				//yes - dispense
 				//no - NLA message
 				//print dispense message
