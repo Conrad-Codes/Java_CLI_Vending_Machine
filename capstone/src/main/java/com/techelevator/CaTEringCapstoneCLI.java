@@ -154,6 +154,34 @@ public class CaTEringCapstoneCLI {
 				}
 
 			} else if (menuChoice.equals("F")) {
+				BigDecimal dollars = new BigDecimal(0);
+				BigDecimal quarters = new BigDecimal(0);
+				BigDecimal dimes = new BigDecimal(0);
+				BigDecimal nickels = new BigDecimal(0);
+
+				BigDecimal[] holder = moneyProvided.divideAndRemainder(new BigDecimal("1.00"));
+				dollars = holder[0];
+				BigDecimal moneyLeft = holder[1];
+
+				if (moneyLeft.compareTo(new BigDecimal("0.00")) == 1){
+					holder = moneyLeft.divideAndRemainder(new BigDecimal("0.25"));
+					quarters = holder[0];
+					moneyLeft = holder[1];
+				}
+				if (moneyLeft.compareTo(new BigDecimal("0.00")) == 1){
+					holder = moneyLeft.divideAndRemainder(new BigDecimal("0.10"));
+					dimes = holder[0];
+					moneyLeft = holder[1];
+				}if (moneyLeft.compareTo(new BigDecimal("0.00")) == 1){
+					holder = moneyLeft.divideAndRemainder(new BigDecimal("0.05"));
+					nickels = holder[0];
+					moneyLeft = holder[1];
+				}
+
+				//Build string to avoid 0 nickels/dimes/stuff..
+				System.out.println("Your change is: " + dollars + " dollars, " + quarters + " quarters, " + dimes + " dimes, and " + nickels + " nickels \n");
+
+				moneyProvided = new BigDecimal("0.00");
 				keepRunning = false;
 			}
 		} while (keepRunning);
@@ -172,14 +200,25 @@ public class CaTEringCapstoneCLI {
 		return str;
 	}
 
-	public static LocalDateTime stringToDateTime() {
+	public static String stringToDateTime() {
 		LocalDateTime logDate = LocalDateTime.now();
+		String amPM = "";
 		int month = logDate.getMonthValue();
 		int date = logDate.getDayOfYear();
 		int year = logDate.getYear();
 		int hour = logDate.getHour();
+		if (hour>=12) {
+			amPM = "PM";
+			if (hour >=13) {
+				hour-=12;
+			}
+		}else {
+			amPM = "AM";
+		}
 		int minute = logDate.getMinute();
 		int second = logDate.getSecond();
-		String dateTimeString = month + "/" + date + "/" + year + "/" + " " +
+		String dateTimeString = month + "/" + date + "/" + year + "/" + " ";
+
+		return dateTimeString;
 	}
 }
