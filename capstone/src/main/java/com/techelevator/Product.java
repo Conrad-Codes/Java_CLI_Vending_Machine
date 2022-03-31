@@ -1,4 +1,4 @@
-package com.techelevator.view;
+package com.techelevator;
 
 import java.math.BigDecimal;
 
@@ -8,6 +8,7 @@ public abstract class Product {
     private BigDecimal price;
     private String location;
     private int inventoryCount = 7;
+
 
     public Product(String name, BigDecimal price, String location) {
         this.name = name;
