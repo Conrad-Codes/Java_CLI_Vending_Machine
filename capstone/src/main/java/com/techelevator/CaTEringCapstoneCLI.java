@@ -2,13 +2,12 @@ package com.techelevator;
 
 import com.techelevator.view.Menu;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.Year;
+import java.util.*;
 
 public class CaTEringCapstoneCLI {
 
@@ -19,8 +18,7 @@ public class CaTEringCapstoneCLI {
 	private String displayOfferings = "";
 	private List<Product> offerings = new ArrayList<>();
 	private BigDecimal moneyProvided = new BigDecimal("0.00");
-
-
+	private File auditFile = new File("Audit.txt");
 
 
 	public CaTEringCapstoneCLI(Menu menu) {
@@ -34,11 +32,20 @@ public class CaTEringCapstoneCLI {
 
 
 		cli.run();
+
 	}
+
 
 	public void run() {
 
-		File inputFile = new File("catering.csv");
+		File inputFile = new File("catering1.csv");
+
+
+		try {
+			auditFile.createNewFile();
+		} catch (IOException e) {
+			System.out.println("File IO exception");
+		}
 
 
 
@@ -103,6 +110,11 @@ public class CaTEringCapstoneCLI {
 						moneyDone= true;
 					}else {
 						moneyProvided = moneyProvided.add(new BigDecimal(inputMoney));
+						try (PrintWriter log = new PrintWriter(new FileOutputStream(auditFile, true))) {
+
+						} catch (FileNotFoundException e) {
+							System.out.println("File not found");
+						}
 					}
 				}while (!moneyDone);
 
@@ -123,6 +135,7 @@ public class CaTEringCapstoneCLI {
 								offering.setInventoryCount();
 								moneyProvided = moneyProvided.subtract(offering.getPrice());
 
+
 								if (offering.getInventoryCount() < 1) {
 									offering.setAvailable(false);
 									break;
@@ -139,10 +152,7 @@ public class CaTEringCapstoneCLI {
 				if (!locationFound) {
 					System.out.println("Location not found");
 				}
-				//yes - dispense
-				//no - NLA message
-				//print dispense message
-				//update inventory, return to purchase menu
+
 			} else if (menuChoice.equals("F")) {
 				keepRunning = false;
 			}
@@ -160,5 +170,16 @@ public class CaTEringCapstoneCLI {
 			}
 		}
 		return str;
+	}
+
+	public static LocalDateTime stringToDateTime() {
+		LocalDateTime logDate = LocalDateTime.now();
+		int month = logDate.getMonthValue();
+		int date = logDate.getDayOfYear();
+		int year = logDate.getYear();
+		int hour = logDate.getHour();
+		int minute = logDate.getMinute();
+		int second = logDate.getSecond();
+		String dateTimeString = month + "/" + date + "/" + year + "/" + " " +
 	}
 }
