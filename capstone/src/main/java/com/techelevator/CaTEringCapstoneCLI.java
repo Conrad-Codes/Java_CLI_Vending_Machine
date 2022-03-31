@@ -110,12 +110,13 @@ public class CaTEringCapstoneCLI {
 						moneyDone= true;
 					}else {
 						moneyProvided = moneyProvided.add(new BigDecimal(inputMoney));
+						try (PrintWriter log = new PrintWriter(new FileOutputStream(auditFile, true))) {
+							log.println(logDateTime() + "MONEY FED:		" + "$" + moneyProvided);
+						} catch (FileNotFoundException e) {
+							System.out.println("File not found");
+						}
 					}
-					try (PrintWriter log = new PrintWriter(new FileOutputStream(auditFile, true))) {
-						log.println(logDateTime() + "MONEY FED:		" + "$" + moneyProvided);
-					} catch (FileNotFoundException e) {
-						System.out.println("File not found");
-					}
+
 				}while (!moneyDone);
 
 			} else if (menuChoice.equals("S")) {
@@ -131,11 +132,14 @@ public class CaTEringCapstoneCLI {
 						locationFound = true;
 						if (offering.isAvailable()) {
 							if (moneyProvided.compareTo(offering.getPrice()) != -1){
+								try (PrintWriter log = new PrintWriter(new FileOutputStream(auditFile, true))) {
+									log.println(logDateTime() + offering.getName() + " " + offering.getLocation() + "	$" + moneyProvided + " $" + offering.getPrice());
+								} catch (FileNotFoundException e) {
+									System.out.println("File not found");
+								}
 								System.out.println(offering.getMessage());
 								offering.setInventoryCount();
 								moneyProvided = moneyProvided.subtract(offering.getPrice());
-
-
 								if (offering.getInventoryCount() < 1) {
 									offering.setAvailable(false);
 									break;
