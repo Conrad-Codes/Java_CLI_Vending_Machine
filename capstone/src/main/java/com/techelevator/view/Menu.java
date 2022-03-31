@@ -7,7 +7,12 @@ import java.util.Scanner;
 
 public class Menu {
 
-// to-do -- build out
+    public void mainMenu() {
+        System.out.println("(D) Display caTEring Items\n(P) Purchase\n(E) Exit");
+    }
 
+    public void purchaseMenu() {
+        System.out.println("(M) Feed Money\n(S) Select Item\n(F) Finish Transaction");
+    }
 
 }
