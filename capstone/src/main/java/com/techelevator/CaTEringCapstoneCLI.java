@@ -110,11 +110,11 @@ public class CaTEringCapstoneCLI {
 						moneyDone= true;
 					}else {
 						moneyProvided = moneyProvided.add(new BigDecimal(inputMoney));
-						try (PrintWriter log = new PrintWriter(new FileOutputStream(auditFile, true))) {
-
-						} catch (FileNotFoundException e) {
-							System.out.println("File not found");
-						}
+					}
+					try (PrintWriter log = new PrintWriter(new FileOutputStream(auditFile, true))) {
+						log.println(logDateTime() + "MONEY FED:		" + "$" + moneyProvided);
+					} catch (FileNotFoundException e) {
+						System.out.println("File not found");
 					}
 				}while (!moneyDone);
 
@@ -200,11 +200,11 @@ public class CaTEringCapstoneCLI {
 		return str;
 	}
 
-	public static String stringToDateTime() {
+	public static String logDateTime() {
 		LocalDateTime logDate = LocalDateTime.now();
 		String amPM = "";
 		int month = logDate.getMonthValue();
-		int date = logDate.getDayOfYear();
+		int date = logDate.getDayOfMonth();
 		int year = logDate.getYear();
 		int hour = logDate.getHour();
 		if (hour>=12) {
@@ -217,8 +217,7 @@ public class CaTEringCapstoneCLI {
 		}
 		int minute = logDate.getMinute();
 		int second = logDate.getSecond();
-		String dateTimeString = month + "/" + date + "/" + year + "/" + " ";
-
+		String dateTimeString = month + "/" + date + "/" + year + " " + hour + ":" + minute + ":" + second + " " + amPM + " ";
 		return dateTimeString;
 	}
 }
