@@ -18,7 +18,6 @@ public class CaTEringCapstoneCLI {
 	private String displayOfferings = "";
 	private List<Product> offerings = new ArrayList<>();
 	private BigDecimal moneyProvided = new BigDecimal("0.00");
-//	private File auditFile = new File("Audit.txt");
 
 
 	public CaTEringCapstoneCLI(Menu menu) {
@@ -39,15 +38,6 @@ public class CaTEringCapstoneCLI {
 	public void run() {
 
 		File inputFile = new File("catering1.csv");
-
-
-//		try {
-//			auditFile.createNewFile();
-//		} catch (IOException e) {
-//			System.out.println("File IO exception");
-//		}
-
-
 
 		try {
 			Scanner fileScanner = new Scanner(inputFile);
@@ -89,6 +79,7 @@ public class CaTEringCapstoneCLI {
 	}
 
 	public void runPurchase() {
+		LogWriter pw = new LogWriter();
 
 		boolean keepRunning = true;
 
@@ -111,11 +102,7 @@ public class CaTEringCapstoneCLI {
 					}else {
 						BigDecimal moneyAdded = new BigDecimal(inputMoney);
 						moneyProvided = moneyProvided.add(moneyAdded);
-//						try (PrintWriter log = new PrintWriter(new FileOutputStream(auditFile, true))) {
-//							log.append(logDateTime() + "MONEY FED:		" + "$" + moneyAdded + ".00" + " $" + moneyProvided);
-//						} catch (FileNotFoundException e) {
-//							System.out.println("File not found");
-//						}
+						pw.appendMoney(moneyAdded, moneyProvided);
 					}
 
 				}while (!moneyDone);
@@ -135,14 +122,9 @@ public class CaTEringCapstoneCLI {
 						if (offering.isAvailable()) {
 							//check to see if enough money was provided
 							if (moneyProvided.compareTo(offering.getPrice()) != -1){
-
 								BigDecimal moneyBeforeDispense = moneyProvided;
 								moneyProvided = moneyProvided.subtract(offering.getPrice());
-//								try (PrintWriter log = new PrintWriter(new FileOutputStream(auditFile, true))) {
-//									log.append(logDateTime() + offering.getName() + " " + offering.getLocation() + "	$" + moneyBeforeDispense + " $" + moneyProvided);
-//								} catch (FileNotFoundException e) {
-//									System.out.println("File not found");
-//								}
+								pw.appendItemDispense(offering.getName(), offering.getLocation(), moneyBeforeDispense, moneyProvided);
 
 								System.out.println(offering.getName() + " $" + offering.getPrice() + " $" + moneyProvided);
 								System.out.println(offering.getMessage());
@@ -169,19 +151,7 @@ public class CaTEringCapstoneCLI {
 				System.out.println(dispenseChange(moneyProvided));
 				BigDecimal changeProvided = moneyProvided;
 				moneyProvided = new BigDecimal("0.00");
-//				PrintWriter log = null;
-//				try {
-//					log = new PrintWriter(new FileOutputStream(auditFile, true));
-//					log.println("\n");
-//					log.println(logDateTime() + "CHANGE GIVEN:		" + "$" + changeProvided + " $" + moneyProvided + "\n *****");
-//					log.flush();
-//					log.close();
-//
-//				} catch (FileNotFoundException e) {
-//					e.printStackTrace();
-//				}
-
-
+				pw.appendFinishTransaction(changeProvided, moneyProvided);
 				keepRunning = false;
 			}
 		} while (keepRunning);
@@ -200,26 +170,6 @@ public class CaTEringCapstoneCLI {
 		return str;
 	}
 
-//	public static String logDateTime() {
-//		LocalDateTime logDate = LocalDateTime.now();
-//		String amPM = "";
-//		int month = logDate.getMonthValue();
-//		int date = logDate.getDayOfMonth();
-//		int year = logDate.getYear();
-//		int hour = logDate.getHour();
-//		if (hour>=12) {
-//			amPM = "PM";
-//			if (hour >=13) {
-//				hour-=12;
-//			}
-//		}else {
-//			amPM = "AM";
-//		}
-//		int minute = logDate.getMinute();
-//		int second = logDate.getSecond();
-//		String dateTimeString = month + "/" + date + "/" + year + " " + hour + ":" + minute + ":" + second + " " + amPM + " ";
-//		return dateTimeString;
-//	}
 
 	public String dispenseChange(BigDecimal moneyProvided){
 		BigDecimal dollars = new BigDecimal(0);
