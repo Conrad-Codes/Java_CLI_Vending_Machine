@@ -4,9 +4,6 @@ import com.techelevator.view.Menu;
 
 import java.io.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.Year;
 import java.util.*;
 
 public class CaTEringCapstoneCLI {
@@ -74,7 +71,7 @@ public class CaTEringCapstoneCLI {
 			} else if (menuChoice.equals("E")) {
 				keepRunning = false;
 			} else {
-				System.out.println("Invalid Entry\n");
+				System.out.println("Invalid input\n");
 			}
 		} while (keepRunning);
 
@@ -114,7 +111,7 @@ public class CaTEringCapstoneCLI {
 							System.out.println("Invalid input\n");
 						}
 					} else {
-						System.out.println("Invalid input\n");
+						System.out.println("\nInvalid input\n");
 					}
 
 				}while (!moneyDone);
@@ -149,16 +146,16 @@ public class CaTEringCapstoneCLI {
 									break;
 								}
 							}else {
-								System.out.println("Not enough funds for this item \n");
+								System.out.println("Not enough funds for this item\n");
 							}
 						} else {
-							System.out.println("Item not available");
+							System.out.println("Item not available\n");
 							break;
 						}
 					}
 				}
 				if (!locationFound) {
-					System.out.println("Location not found");
+					System.out.println("Location not found\n");
 				}
 
 			} else if (menuChoice.equals("F")) {

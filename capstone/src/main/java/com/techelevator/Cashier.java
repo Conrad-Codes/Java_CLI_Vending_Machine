@@ -61,7 +61,7 @@ public class Cashier {
         }
 
         this.moneyProvided = new BigDecimal("0.00");
-        return (changeOutStr);
+        return (changeOutStr + "\n");
     }
 
 }
