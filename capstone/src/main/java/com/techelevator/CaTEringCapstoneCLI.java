@@ -65,6 +65,7 @@ public class CaTEringCapstoneCLI {
 		do {
 			menu.mainMenu();
 			String menuChoice = inputScanner.nextLine().toUpperCase();
+			System.out.println("");
 
 			if (menuChoice.equals("D")) {
 				System.out.println(offeringsDisplay());
@@ -72,6 +73,8 @@ public class CaTEringCapstoneCLI {
 				runPurchase();
 			} else if (menuChoice.equals("E")) {
 				keepRunning = false;
+			} else {
+				System.out.println("Invalid Entry\n");
 			}
 		} while (keepRunning);
 
@@ -89,24 +92,29 @@ public class CaTEringCapstoneCLI {
 
 			String menuChoice = inputScanner.nextLine();
 			menuChoice = menuChoice.toUpperCase();
+			System.out.println();
 
 			if (menuChoice.equals("M")) {
 				// money!
 				boolean moneyDone = false;
 				do {
-					System.out.println("Please Feed Money or press X when done");
+					System.out.println("Please Feed Money (1, 5, 10, or 20) or press X when done");
 					System.out.println("Current Money Provided: $" + cashier.getMoneyProvided());
 					String inputMoney = inputScanner.nextLine().toUpperCase();
 					if (inputMoney.equals("X")) {
 						moneyDone= true;
-					}else {
+						System.out.println();
+					}else  if(inputMoney.equals("1") || inputMoney.equals("5") || inputMoney.equals("10") || inputMoney.equals("20")){
 						try {
 							BigDecimal moneyAdded = new BigDecimal(inputMoney);
 							cashier.addMoneyProvided(moneyAdded);
 							pw.appendMoney(moneyAdded, cashier.getMoneyProvided());
+							System.out.println();
 						} catch (NumberFormatException e) {
 							System.out.println("Invalid input\n");
 						}
+					} else {
+						System.out.println("Invalid input\n");
 					}
 
 				}while (!moneyDone);
@@ -114,9 +122,11 @@ public class CaTEringCapstoneCLI {
 			} else if (menuChoice.equals("S")) {
 				//display offerings
 				System.out.println(offeringsDisplay());
+				System.out.println("Current Money Provided: $" + cashier.getMoneyProvided());
 				//Ask for and take in location of offerings
 				System.out.println("Please enter location of desired item");
 				String itemLocation = inputScanner.nextLine().toUpperCase();
+				System.out.println();
 				//check if actual location exists
 				boolean locationFound = false;
 				for (Product offering : offerings){
@@ -130,7 +140,7 @@ public class CaTEringCapstoneCLI {
 								cashier.subtractMoney(offering.getPrice());
 								pw.appendItemDispense(offering.getName(), offering.getLocation(), moneyBeforeDispense, cashier.getMoneyProvided());
 
-								System.out.println(offering.getName() + " $" + offering.getPrice() + " $" + cashier.getMoneyProvided());
+								System.out.println(offering.getName() + " $" + offering.getPrice() + " \nMoney left: $" + cashier.getMoneyProvided());
 								System.out.println(offering.getMessage() + "\n");
 								offering.setInventoryCount();
 
@@ -156,6 +166,8 @@ public class CaTEringCapstoneCLI {
 				System.out.println(cashier.dispenseChange());
 				pw.appendFinishTransaction(changeProvided, cashier.getMoneyProvided());
 				keepRunning = false;
+			} else {
+				System.out.println("Invalid Input\n");
 			}
 		} while (keepRunning);
 	}
@@ -172,47 +184,4 @@ public class CaTEringCapstoneCLI {
 		}
 		return str;
 	}
-
-
-//	public String dispenseChange(BigDecimal moneyProvided){
-//		BigDecimal dollars = new BigDecimal(0);
-//		BigDecimal quarters = new BigDecimal(0);
-//		BigDecimal dimes = new BigDecimal(0);
-//		BigDecimal nickels = new BigDecimal(0);
-//
-//		BigDecimal[] holder = moneyProvided.divideAndRemainder(new BigDecimal("1.00"));
-//		dollars = holder[0];
-//		BigDecimal moneyLeft = holder[1];
-//
-//		if (moneyLeft.compareTo(new BigDecimal("0.00")) == 1){
-//			holder = moneyLeft.divideAndRemainder(new BigDecimal("0.25"));
-//			quarters = holder[0];
-//			moneyLeft = holder[1];
-//		}
-//		if (moneyLeft.compareTo(new BigDecimal("0.00")) == 1){
-//			holder = moneyLeft.divideAndRemainder(new BigDecimal("0.10"));
-//			dimes = holder[0];
-//			moneyLeft = holder[1];
-//		}if (moneyLeft.compareTo(new BigDecimal("0.00")) == 1) {
-//			holder = moneyLeft.divideAndRemainder(new BigDecimal("0.05"));
-//			nickels = holder[0];
-//			moneyLeft = holder[1];
-//		}
-//		BigDecimal zero = new BigDecimal("0.00");
-//		String changeOutStr = "Your change is: ";
-//		if (dollars.compareTo(zero) == 1){
-//			changeOutStr += dollars + " dollar(s) ";
-//		}
-//		if (quarters.compareTo(zero) == 1){
-//			changeOutStr += quarters + " quarter(s) ";
-//		}
-//		if (dimes.compareTo(zero) == 1){
-//			changeOutStr += dimes + " dime(s) ";
-//		}
-//		if (nickels.compareTo(zero) == 1){
-//			changeOutStr += nickels + " nickel(s) ";
-//		}
-//
-//		return (changeOutStr);
-//	}
 }
