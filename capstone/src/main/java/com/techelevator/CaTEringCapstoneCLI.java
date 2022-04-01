@@ -109,9 +109,10 @@ public class CaTEringCapstoneCLI {
 					if (inputMoney.equals("S")) {
 						moneyDone= true;
 					}else {
-						moneyProvided = moneyProvided.add(new BigDecimal(inputMoney));
+						BigDecimal moneyAdded = new BigDecimal(inputMoney);
+						moneyProvided = moneyProvided.add(moneyAdded);
 						try (PrintWriter log = new PrintWriter(new FileOutputStream(auditFile, true))) {
-							log.println(logDateTime() + "MONEY FED:		" + "$" + moneyProvided);
+							log.println(logDateTime() + "MONEY FED:		" + "$" + moneyAdded + ".00" + " $" + moneyProvided);
 						} catch (FileNotFoundException e) {
 							System.out.println("File not found");
 						}
@@ -137,9 +138,11 @@ public class CaTEringCapstoneCLI {
 								} catch (FileNotFoundException e) {
 									System.out.println("File not found");
 								}
+								moneyProvided = moneyProvided.subtract(offering.getPrice());
+								System.out.println(offering.getName() + " $" + offering.getPrice() + " $" + moneyProvided);
 								System.out.println(offering.getMessage());
 								offering.setInventoryCount();
-								moneyProvided = moneyProvided.subtract(offering.getPrice());
+
 								if (offering.getInventoryCount() < 1) {
 									offering.setAvailable(false);
 									break;
@@ -184,12 +187,13 @@ public class CaTEringCapstoneCLI {
 
 				//Build string to avoid 0 nickels/dimes/stuff..
 				System.out.println("Your change is: " + dollars + " dollars, " + quarters + " quarters, " + dimes + " dimes, and " + nickels + " nickels \n");
+				BigDecimal changeProvided = moneyProvided;
+				moneyProvided = new BigDecimal("0.00");
 				try (PrintWriter log = new PrintWriter(new FileOutputStream(auditFile, true))) {
-					log.println(logDateTime() + "CHANGE GIVEN:		" + "$" + moneyProvided + "\n *****");
+					log.println(logDateTime() + "CHANGE GIVEN:		" + "$" + changeProvided + " $" + moneyProvided + "\n *****");
 				} catch (FileNotFoundException e) {
 					System.out.println("File not found");
 				}
-				moneyProvided = new BigDecimal("0.00");
 				keepRunning = false;
 			}
 		} while (keepRunning);
@@ -198,7 +202,7 @@ public class CaTEringCapstoneCLI {
 	public String offeringsDisplay(){
 		String str = "";
 		for (Product offering : offerings){
-			str += offering.getLocation() + " " + offering.getName() + " " + offering.getPrice();
+			str += offering.getLocation() + " " + offering.getName() + " $" + offering.getPrice() + " QTY " + offering.getInventoryCount();
 			if (!offering.isAvailable()){
 				str+= " NO LONGER AVAILABLE\n";
 			}else {
