@@ -18,7 +18,7 @@ public class CaTEringCapstoneCLI {
 	private String displayOfferings = "";
 	private List<Product> offerings = new ArrayList<>();
 	private BigDecimal moneyProvided = new BigDecimal("0.00");
-	private File auditFile = new File("Audit.txt");
+//	private File auditFile = new File("Audit.txt");
 
 
 	public CaTEringCapstoneCLI(Menu menu) {
@@ -41,11 +41,11 @@ public class CaTEringCapstoneCLI {
 		File inputFile = new File("catering1.csv");
 
 
-		try {
-			auditFile.createNewFile();
-		} catch (IOException e) {
-			System.out.println("File IO exception");
-		}
+//		try {
+//			auditFile.createNewFile();
+//		} catch (IOException e) {
+//			System.out.println("File IO exception");
+//		}
 
 
 
@@ -103,19 +103,19 @@ public class CaTEringCapstoneCLI {
 				// money!
 				boolean moneyDone = false;
 				do {
-					System.out.println("Please Feed Money or press S when done");
+					System.out.println("Please Feed Money or press X when done");
 					System.out.println("Current Money Provided: $" + moneyProvided);
 					String inputMoney = inputScanner.nextLine().toUpperCase();
-					if (inputMoney.equals("S")) {
+					if (inputMoney.equals("X")) {
 						moneyDone= true;
 					}else {
 						BigDecimal moneyAdded = new BigDecimal(inputMoney);
 						moneyProvided = moneyProvided.add(moneyAdded);
-						try (PrintWriter log = new PrintWriter(new FileOutputStream(auditFile, true))) {
-							log.println(logDateTime() + "MONEY FED:		" + "$" + moneyAdded + ".00" + " $" + moneyProvided);
-						} catch (FileNotFoundException e) {
-							System.out.println("File not found");
-						}
+//						try (PrintWriter log = new PrintWriter(new FileOutputStream(auditFile, true))) {
+//							log.append(logDateTime() + "MONEY FED:		" + "$" + moneyAdded + ".00" + " $" + moneyProvided);
+//						} catch (FileNotFoundException e) {
+//							System.out.println("File not found");
+//						}
 					}
 
 				}while (!moneyDone);
@@ -131,14 +131,19 @@ public class CaTEringCapstoneCLI {
 				for (Product offering : offerings){
 					if (offering.getLocation().equals(itemLocation)){
 						locationFound = true;
+						//check if item is available
 						if (offering.isAvailable()) {
+							//check to see if enough money was provided
 							if (moneyProvided.compareTo(offering.getPrice()) != -1){
-								try (PrintWriter log = new PrintWriter(new FileOutputStream(auditFile, true))) {
-									log.println(logDateTime() + offering.getName() + " " + offering.getLocation() + "	$" + moneyProvided + " $" + offering.getPrice());
-								} catch (FileNotFoundException e) {
-									System.out.println("File not found");
-								}
+
+								BigDecimal moneyBeforeDispense = moneyProvided;
 								moneyProvided = moneyProvided.subtract(offering.getPrice());
+//								try (PrintWriter log = new PrintWriter(new FileOutputStream(auditFile, true))) {
+//									log.append(logDateTime() + offering.getName() + " " + offering.getLocation() + "	$" + moneyBeforeDispense + " $" + moneyProvided);
+//								} catch (FileNotFoundException e) {
+//									System.out.println("File not found");
+//								}
+
 								System.out.println(offering.getName() + " $" + offering.getPrice() + " $" + moneyProvided);
 								System.out.println(offering.getMessage());
 								offering.setInventoryCount();
@@ -161,39 +166,22 @@ public class CaTEringCapstoneCLI {
 				}
 
 			} else if (menuChoice.equals("F")) {
-				BigDecimal dollars = new BigDecimal(0);
-				BigDecimal quarters = new BigDecimal(0);
-				BigDecimal dimes = new BigDecimal(0);
-				BigDecimal nickels = new BigDecimal(0);
-
-				BigDecimal[] holder = moneyProvided.divideAndRemainder(new BigDecimal("1.00"));
-				dollars = holder[0];
-				BigDecimal moneyLeft = holder[1];
-
-				if (moneyLeft.compareTo(new BigDecimal("0.00")) == 1){
-					holder = moneyLeft.divideAndRemainder(new BigDecimal("0.25"));
-					quarters = holder[0];
-					moneyLeft = holder[1];
-				}
-				if (moneyLeft.compareTo(new BigDecimal("0.00")) == 1){
-					holder = moneyLeft.divideAndRemainder(new BigDecimal("0.10"));
-					dimes = holder[0];
-					moneyLeft = holder[1];
-				}if (moneyLeft.compareTo(new BigDecimal("0.00")) == 1){
-					holder = moneyLeft.divideAndRemainder(new BigDecimal("0.05"));
-					nickels = holder[0];
-					moneyLeft = holder[1];
-				}
-
-				//Build string to avoid 0 nickels/dimes/stuff..
-				System.out.println("Your change is: " + dollars + " dollars, " + quarters + " quarters, " + dimes + " dimes, and " + nickels + " nickels \n");
+				System.out.println(dispenseChange(moneyProvided));
 				BigDecimal changeProvided = moneyProvided;
 				moneyProvided = new BigDecimal("0.00");
-				try (PrintWriter log = new PrintWriter(new FileOutputStream(auditFile, true))) {
-					log.println(logDateTime() + "CHANGE GIVEN:		" + "$" + changeProvided + " $" + moneyProvided + "\n *****");
-				} catch (FileNotFoundException e) {
-					System.out.println("File not found");
-				}
+//				PrintWriter log = null;
+//				try {
+//					log = new PrintWriter(new FileOutputStream(auditFile, true));
+//					log.println("\n");
+//					log.println(logDateTime() + "CHANGE GIVEN:		" + "$" + changeProvided + " $" + moneyProvided + "\n *****");
+//					log.flush();
+//					log.close();
+//
+//				} catch (FileNotFoundException e) {
+//					e.printStackTrace();
+//				}
+
+
 				keepRunning = false;
 			}
 		} while (keepRunning);
@@ -212,24 +200,66 @@ public class CaTEringCapstoneCLI {
 		return str;
 	}
 
-	public static String logDateTime() {
-		LocalDateTime logDate = LocalDateTime.now();
-		String amPM = "";
-		int month = logDate.getMonthValue();
-		int date = logDate.getDayOfMonth();
-		int year = logDate.getYear();
-		int hour = logDate.getHour();
-		if (hour>=12) {
-			amPM = "PM";
-			if (hour >=13) {
-				hour-=12;
-			}
-		}else {
-			amPM = "AM";
+//	public static String logDateTime() {
+//		LocalDateTime logDate = LocalDateTime.now();
+//		String amPM = "";
+//		int month = logDate.getMonthValue();
+//		int date = logDate.getDayOfMonth();
+//		int year = logDate.getYear();
+//		int hour = logDate.getHour();
+//		if (hour>=12) {
+//			amPM = "PM";
+//			if (hour >=13) {
+//				hour-=12;
+//			}
+//		}else {
+//			amPM = "AM";
+//		}
+//		int minute = logDate.getMinute();
+//		int second = logDate.getSecond();
+//		String dateTimeString = month + "/" + date + "/" + year + " " + hour + ":" + minute + ":" + second + " " + amPM + " ";
+//		return dateTimeString;
+//	}
+
+	public String dispenseChange(BigDecimal moneyProvided){
+		BigDecimal dollars = new BigDecimal(0);
+		BigDecimal quarters = new BigDecimal(0);
+		BigDecimal dimes = new BigDecimal(0);
+		BigDecimal nickels = new BigDecimal(0);
+
+		BigDecimal[] holder = moneyProvided.divideAndRemainder(new BigDecimal("1.00"));
+		dollars = holder[0];
+		BigDecimal moneyLeft = holder[1];
+
+		if (moneyLeft.compareTo(new BigDecimal("0.00")) == 1){
+			holder = moneyLeft.divideAndRemainder(new BigDecimal("0.25"));
+			quarters = holder[0];
+			moneyLeft = holder[1];
 		}
-		int minute = logDate.getMinute();
-		int second = logDate.getSecond();
-		String dateTimeString = month + "/" + date + "/" + year + " " + hour + ":" + minute + ":" + second + " " + amPM + " ";
-		return dateTimeString;
+		if (moneyLeft.compareTo(new BigDecimal("0.00")) == 1){
+			holder = moneyLeft.divideAndRemainder(new BigDecimal("0.10"));
+			dimes = holder[0];
+			moneyLeft = holder[1];
+		}if (moneyLeft.compareTo(new BigDecimal("0.00")) == 1) {
+			holder = moneyLeft.divideAndRemainder(new BigDecimal("0.05"));
+			nickels = holder[0];
+			moneyLeft = holder[1];
+		}
+		BigDecimal zero = new BigDecimal("0.00");
+		String changeOutStr = "Your change is: ";
+		if (dollars.compareTo(zero) == 1){
+			changeOutStr += dollars + " dollar(s) ";
+		}
+		if (quarters.compareTo(zero) == 1){
+			changeOutStr += quarters + " quarter(s) ";
+		}
+		if (dimes.compareTo(zero) == 1){
+			changeOutStr += dimes + " dime(s) ";
+		}
+		if (nickels.compareTo(zero) == 1){
+			changeOutStr += nickels + " nickel(s) ";
+		}
+
+		return (changeOutStr);
 	}
 }
