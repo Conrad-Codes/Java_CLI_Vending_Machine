@@ -33,7 +33,7 @@ public class LogWriter {
             PrintWriter log = null;
             try {
                 log = new PrintWriter(new FileOutputStream(auditFile, true));
-                log.append(logDateTime() + name + " " + location + "	$" + moneyBeforeDispense + " $" + moneyProvided);
+                log.println(logDateTime() + name + " " + location + "	$" + moneyBeforeDispense + " $" + moneyProvided);
                 log.flush();
                 log.close();
             } catch (FileNotFoundException e) {

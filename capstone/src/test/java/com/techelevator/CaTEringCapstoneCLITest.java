@@ -13,14 +13,15 @@ public class CaTEringCapstoneCLITest {
     public void test_dispense_change() {
         Menu menu = new Menu();
         CaTEringCapstoneCLI cli = new CaTEringCapstoneCLI(menu);
+        Cashier cashier = new Cashier();
 
-        BigDecimal money = new BigDecimal("1.85");
+        cashier.addMoneyProvided(new BigDecimal("1.85"));
 
         String expectedResult = "Your change is: 1 dollar(s) 3 quarter(s) 1 dime(s) ";
 
-        assertEquals(expectedResult, cli.dispenseChange(money));
+        assertEquals(expectedResult, cashier.dispenseChange());
         BigDecimal zeroMoney = new BigDecimal("0.00");
-        assertEquals("Your change is: ", cli.dispenseChange(zeroMoney));
+        assertEquals("Your change is: ", cashier.dispenseChange());
 
 
     }
