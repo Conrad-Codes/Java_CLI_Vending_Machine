@@ -184,7 +184,11 @@ public class CaTEringCapstoneCLI {
 
 				//Build string to avoid 0 nickels/dimes/stuff..
 				System.out.println("Your change is: " + dollars + " dollars, " + quarters + " quarters, " + dimes + " dimes, and " + nickels + " nickels \n");
-
+				try (PrintWriter log = new PrintWriter(new FileOutputStream(auditFile, true))) {
+					log.println(logDateTime() + "CHANGE GIVEN:		" + "$" + moneyProvided + "\n *****");
+				} catch (FileNotFoundException e) {
+					System.out.println("File not found");
+				}
 				moneyProvided = new BigDecimal("0.00");
 				keepRunning = false;
 			}
