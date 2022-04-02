@@ -15,14 +15,13 @@ public class CaTEringCapstoneCLITest {
         CaTEringCapstoneCLI cli = new CaTEringCapstoneCLI(menu);
         Cashier cashier = new Cashier();
 
-        cashier.addMoneyProvided(new BigDecimal("1.85"));
-
-        String expectedResult = "Your change is: 1 dollar(s) 3 quarter(s) 1 dime(s) ";
+        cashier.addMoneyProvided(new BigDecimal("1.90"));
+        String expectedResult = "Your change is: 1 dollar(s) 3 quarter(s) 1 dime(s) 1 nickel(s) ";
 
         assertEquals(expectedResult, cashier.dispenseChange());
+
         BigDecimal zeroMoney = new BigDecimal("0.00");
         assertEquals("Your change is: ", cashier.dispenseChange());
-
 
     }
 
